@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+
+// 💡 1. 必须导出 getStaticPaths 并调用 paginate 函数
+export async function getStaticPaths({ paginate }) {
+  // 从 src/content/posts 目录中获取所有文章，并按日期倒序排列
+  const allPosts = await getCollection('posts');
+  const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  // 返回分页数据，pageSize 指定每页显示多少篇文章（比如每页 10 篇）
+  return paginate(sortedPosts, { pageSize: 10 });
+}
+
+// 💡 2. 所有分页数据都会通过 page 属性传递进来
+const { page } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>文章列表 - 第 {page.currentPage} 页</title>
+  </head>
+  <body>
+    <main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+      <h1>文章列表</h1>
+      <p>第 {page.currentPage} / {page.lastPage} 页</p>
+
+      <!-- 循环渲染当前页的文章 -->
+      <ul>
+        {page.data.map((post) => (
+          <li style="margin-bottom: 1rem;">
+            <a href={`/posts/${post.id}`}>
+              <strong>{post.data.title}</strong>
+            </a>
+            <span style="color: #666; margin-left: 10px;">
+              {new Date(post.data.date).toLocaleDateString()}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <!-- 分页导航按钮 -->
+      <nav style="margin-top: 2rem; display: flex; gap: 1rem;">
+        {page.url.prev ? <a href={page.url.prev}>← 上一页</a> : null}
+        {page.url.next ? <a href={page.url.next}>下一页 →</a> : null}
+      </nav>
+    </main>
+  </body>
+</html>

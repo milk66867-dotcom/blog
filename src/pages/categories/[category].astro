@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+
+// 1. 必须导出 getStaticPaths 告诉 Astro 要生成哪些分类页面
+export async function getStaticPaths() {
+  // 假设你的博客文章内容集合名字叫 'posts'（或者是 'blog'，请根据你 src/content/ 中的目录名修改）
+  const allPosts = await getCollection('posts'); 
+  
+  // 提取所有文章的 category 字段，并去重
+  const uniqueCategories = [
+    ...new Set(allPosts.map((post) => post.data.category).filter(Boolean))
+  ];
+
+  // 返回符合 Astro 要求的路由参数数组
+  return uniqueCategories.map((category) => {
+    return {
+      params: { category },
+      // 把当前分类下的文章通过 props 传给页面
+      props: { 
+        posts: allPosts.filter((post) => post.data.category === category) 
+      },
+    };
+  });
+}
+
+// 2. 从参数和属性中获取数据
+const { category } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>分类：{category}</title>
+  </head>
+  <body>
+    <main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+      <a href="/" style="color: #666; text-decoration: none;">← 返回首页</a>
+      <h1 style="margin-top: 1rem;">分类：<span style="color: #0ea5e9;">{category}</span></h1>
+      <p>共找到 {posts.length} 篇文章：</p>
+      
+      <ul style="line-height: 2;">
+        {posts.map((post) => (
+          <li>
+            <a href={`/posts/${post.id}`}>
+              {post.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </main>
+  </body>
+</html>

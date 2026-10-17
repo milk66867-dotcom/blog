@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  // 1. 获取所有的博客文章
+  const allPosts = await getCollection('blog'); // 如果你的集合名字不叫 'blog'，请修改这里
+  
+  // 2. 从所有文章中提取出不重复的标签列表
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+  // 3. 返回 Astro 要求的格式
+  return uniqueTags.map((tag) => {
+    // 过滤出属于当前标签的文章，传给页面使用
+    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+    return {
+      params: { tag: tag },
+      props: { posts: filteredPosts },
+    };
+  });
+}
+
+// 从 params 拿到当前标签名，从 props 拿到该标签下的文章列表
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<h1>标签: {tag}</h1>
+<ul>
+  {posts.map((post) => (
+    <li><a href={`/posts/${post.id}`}>{post.data.title}</a></li>
+  ))}
+</ul>

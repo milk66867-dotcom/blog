@@ -1,16 +1,37 @@
 ---
+// src/pages/index.astro
+import { getCollection } from 'astro:content';
+
+// 1. 自动获取 src/content/posts/ 目录下的所有文章
+const allPosts = await getCollection('posts');
+
+const pageTitle = "我的技术博客";
 ---
 
-<html lang="en">
+<html lang="zh-CN">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>{pageTitle}</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<h1>{pageTitle}</h1>
+		
+		<h2>近期文章</h2>
+		<ul>
+			{allPosts.map((post) => (
+				<li>
+					{/* 注意：在 Content Collections 中，路径属性是 post.id 
+					    生成的路由通常对应为 /posts/文件名/ */}
+					<a href={`/posts/${post.id}/`}>
+						{post.data.title || "未命名文章"}
+					</a>
+					{post.data.pubDate && <span> - {post.data.pubDate.toLocaleDateString()}</span>}
+				</li>
+			))}
+		</ul>
 	</body>
 </html>
