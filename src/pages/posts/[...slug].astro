@@ -1,41 +1,27 @@
 ---
-import { getCollection, render } from 'astro:content';
+// src/pages/posts/[...slug].astro
+import type { GetStaticPaths } from 'astro';
+import PostLayout from '@/layouts/PostLayout.astro';
+import {
+  getAllPosts,
+  getAdjacentPosts,
+} from '@/services/content';
+import type { Post } from '@/domain/types';
 
-// 💡 1. 必须导出 getStaticPaths 列出所有的文章 slug
-export async function getStaticPaths() {
-  const posts = await getCollection('posts'); // 确保这里的名字与你的内容集合文件夹一致
-  
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getAllPosts({ includeDrafts: false });
   return posts.map((post) => ({
-    // 这里的参数必须命名为 slug，以便跟文件名 [...slug] 里的命名一一对应
-    params: { slug: post.id || post.slug }, 
+    params: { slug: post.slug },
     props: { post },
   }));
+};
+
+interface Props {
+  post: Post;
 }
 
-// 💡 2. 从属性中获取当前被匹配的那篇文章对象
 const { post } = Astro.props;
-// 💡 3. 解构出负责把 Markdown/MDX 渲染成 HTML 的 Content 组件
-const { Content } = await render(post);
+const { prev, next } = await getAdjacentPosts(post.slug);
 ---
 
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <title>{post.data.title}</title>
-  </head>
-  <body>
-    <main style="padding: 2rem; max-width: 800px; margin: 0 auto;">
-      <a href="/" style="color: #666; text-decoration: none;">← 返回首页</a>
-      <article style="margin-top: 2rem;">
-        <h1>{post.data.title}</h1>
-        <p style="color: #666;">
-          发布日期：{new Date(post.data.date).toLocaleDateString()}
-        </p>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 2rem 0;" />
-        
-        <!-- 💡 渲染文章主体 Markdown 内容 -->
-        <Content />
-      </article>
-    </main>
-  </body>
-</html>
+<PostLayout post={post} prev={prev} next={next} />

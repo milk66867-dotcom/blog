@@ -1,0 +1,69 @@
+---
+// src/layouts/PostLayout.astro
+import BaseLayout from './BaseLayout.astro';
+import type { Post } from '@/domain/types';
+import { formatDate } from '@/domain/utils';
+
+interface Props {
+  post: Post;
+  prev?: Post | null;
+  next?: Post | null;
+}
+
+const { post, prev, next } = Astro.props;
+---
+
+<BaseLayout
+  title={post.frontmatter.title}
+  description={post.excerpt}
+  image={post.seo.ogImage}
+  type="article"
+>
+  <article class="post-layout" data-md-style={post.frontmatter.style ?? 'github'}>
+    <header class="post-header">
+      <h1>{post.frontmatter.title}</h1>
+      <div class="post-meta">
+        <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
+        <span>·</span>
+        <span>{post.readingTime} 分钟阅读</span>
+        {post.frontmatter.category && <span>· {post.frontmatter.category}</span>}
+      </div>
+      {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+        <ul class="post-tags">
+          {post.frontmatter.tags.map((tag) => (
+            <li><a href={`/tags/${encodeURIComponent(tag)}`}>{tag}</a></li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    {post.frontmatter.toc !== false && post.toc.length > 0 && (
+      <aside class="post-toc">
+        <p>目录</p>
+        <ul>
+          {post.toc.map((item) => (
+            <li>
+              <a href={`#${item.id}`}>{item.text}</a>
+              {item.children && item.children.length > 0 && (
+                <ul>
+                  {item.children.map((child) => (
+                    <li><a href={`#${child.id}`}>{child.text}</a></li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
+
+    <div class="post-content prose">
+      <Fragment set:html={post.html} />
+    </div>
+
+    <nav class="post-nav">
+      {prev && <a href={prev.url}>← {prev.frontmatter.title}</a>}
+      {next && <a href={next.url}>{next.frontmatter.title} →</a>}
+    </nav>
+  </article>
+</BaseLayout>

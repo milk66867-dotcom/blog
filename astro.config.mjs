@@ -7,10 +7,18 @@ import react from '@astrojs/react';
 
 import mdx from '@astrojs/mdx';
 
+import { fileURLToPath } from 'node:url'; // 1. 引入必要的文件路径工具
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        // 2. 将 @/ 映射到项目的 src 目录
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
+    }
   },
 
   integrations: [react(), mdx()]

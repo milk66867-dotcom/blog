@@ -1,0 +1,108 @@
+---
+// src/layouts/BaseLayout.astro
+import { siteConfig } from '@/config/site.config';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = siteConfig.description,
+  image = siteConfig.seo.defaultOgImage,
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+
+const fullTitle =
+  title === siteConfig.title
+    ? title
+    : siteConfig.seo.titleTemplate.replace('%s', title);
+const canonical = new URL(Astro.url.pathname, siteConfig.url).toString();
+---
+
+<!doctype html>
+<html lang={siteConfig.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- SEO 占位：阶段 6 会替换为 SeoHead 组件 -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, siteConfig.url).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- 主题内联脚本：必须在 CSS 加载前执行，防止闪烁 -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('techblog:theme') || 'system';
+          var resolved =
+            stored === 'system'
+              ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : stored;
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.dataset.themePreference = stored;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="site-nav">
+        <a href="/" class="site-logo">{siteConfig.title}</a>
+        <ul>
+          {
+            siteConfig.navigation
+              .filter((item) => item.visible)
+              .sort((a, b) => a.order - b.order)
+              .map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+          }
+        </ul>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        © {new Date().getFullYear()} {siteConfig.author.name}
+        {siteConfig.license && ` · ${siteConfig.license}`}
+      </p>
+    </footer>
+
+    <slot name="scripts" />
+  </body>
+</html>

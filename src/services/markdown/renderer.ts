@@ -1,5 +1,6 @@
 // src/services/markdown/renderer.ts
-import { unified } from '@astrojs/markdown-remark';
+// import { unified } from '@astrojs/markdown-remark';
+import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
@@ -10,6 +11,8 @@ import { resolveMarkdownStyle } from './style-resolver';
 import { rehypeCodePlugin } from './plugins/rehype-code';
 import { rehypeImagePlugin } from './plugins/rehype-image';
 import { rehypeMermaidPlugin } from './plugins/rehype-mermaid';
+import { visit } from 'unist-util-visit';
+
 
 export interface RenderOptions {
     style?: MarkdownStyle;
@@ -19,6 +22,21 @@ export interface RenderOptions {
     codeCopy?: boolean;
     imageLightbox?: boolean;
 }
+
+// 辅助函数：深度优先遍历节点，提取出里面所有的纯文本
+function extractText(node: any): string {
+    if (!node) return '';
+    // 如果本身就是文本节点，直接返回它的值
+    if (node.type === 'text') return node.value;
+
+    // 如果包含子节点（比如 <h1><span>标题内容</span></h1>），递归拼接所有子节点的文本
+    if (node.children && Array.isArray(node.children)) {
+        return node.children.map(extractText).join('');
+    }
+
+    return '';
+}
+
 
 export async function renderMarkdown(
     raw: string,

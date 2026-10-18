@@ -1,37 +1,35 @@
 ---
 // src/pages/index.astro
-import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAllPosts } from '@/services/content';
+import { siteConfig } from '@/config/site.config';
+import { formatDate } from '@/domain/utils';
 
-// 1. 自动获取 src/content/posts/ 目录下的所有文章
-const allPosts = await getCollection('posts');
-
-const pageTitle = "我的技术博客";
+const posts = await getAllPosts({ limit: 5 });
 ---
 
-<html lang="zh-CN">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
-	</head>
-	<body>
-		<h1>{pageTitle}</h1>
-		
-		<h2>近期文章</h2>
-		<ul>
-			{allPosts.map((post) => (
-				<li>
-					{/* 注意：在 Content Collections 中，路径属性是 post.id 
-					    生成的路由通常对应为 /posts/文件名/ */}
-					<a href={`/posts/${post.id}/`}>
-						{post.data.title || "未命名文章"}
-					</a>
-					{post.data.pubDate && <span> - {post.data.pubDate.toLocaleDateString()}</span>}
-				</li>
-			))}
-		</ul>
-	</body>
-</html>
+<BaseLayout title={siteConfig.title} description={siteConfig.description}>
+  <section class="hero">
+    <h1>{siteConfig.title}</h1>
+    <p>{siteConfig.description}</p>
+    <p>作者：{siteConfig.author.name}</p>
+  </section>
+
+  <section class="latest-posts">
+    <h2>最新文章</h2>
+    {posts.length === 0 ? (
+      <p>还没有文章。</p>
+    ) : (
+      <ul>
+        {posts.map((post) => (
+          <li>
+            <a href={post.url}>{post.frontmatter.title}</a>
+            <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
+            <p>{post.excerpt}</p>
+          </li>
+        ))}
+      </ul>
+    )}
+    <a href="/posts">查看全部文章 →</a>
+  </section>
+</BaseLayout>
