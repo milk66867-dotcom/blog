@@ -11,7 +11,6 @@ import CodeBlock from "@/components/markdown/CodeBlock";
 import ImageLightbox from "@/components/markdown/ImageLightbox";
 import MarkdownStyleSwitcher from "@/components/post/MarkdownStyleSwitcher";
 
-// 1. 引入生成 JSON-LD 的服务和站点配置
 import { buildArticleJsonLd } from "@/services/seo";
 import { siteConfig } from "@/config/site.config";
 
@@ -28,7 +27,6 @@ const style = post.frontmatter.style ?? "github";
 const showToc = post.frontmatter.toc !== false && post.toc.length > 0;
 const showComments = post.frontmatter.comments !== false;
 
-// 2. 生成合并后的 SEO 对象
 const articleJsonLd = buildArticleJsonLd(post, siteConfig);
 const finalSeo = {
   ...post.seo,
@@ -36,7 +34,6 @@ const finalSeo = {
 };
 ---
 
-<!-- 3. 直接传入完整的 seo 对象，移除零散的 title/description 等属性 -->
 <BaseLayout title={post.frontmatter.title} seo={finalSeo}>
   <div class="mx-auto max-w-6xl px-4 py-8">
     <div class="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
@@ -60,7 +57,8 @@ const finalSeo = {
       }
 
       <article class="min-w-0" data-md-style={style} id="post-content">
-        <header class="mb-8">
+        <!-- 👇 加上 data-pagefind-ignore，不将标题元数据索引进搜索 -->
+        <header class="mb-8" data-pagefind-ignore>
           <h1 class="text-3xl font-bold leading-tight">
             {post.frontmatter.title}
           </h1>
@@ -70,6 +68,7 @@ const finalSeo = {
           </div>
         </header>
 
+        <!-- 正文渲染区（注意：真正的 data-pagefind-body 应该在 MarkdownRenderer 组件内部） -->
         <MarkdownRenderer
           content={post.html}
           style={style}
@@ -81,16 +80,23 @@ const finalSeo = {
           headings={post.headings}
         />
 
+        <!-- 👇 加上忽略标记 -->
         {
           showComments && (
-            <section class="mt-12 rounded border border-dashed border-tb-border p-6 text-center text-sm text-tb-muted">
+            <section
+              data-pagefind-ignore
+              class="mt-12 rounded border border-dashed border-tb-border p-6 text-center text-sm text-tb-muted"
+            >
               评论区将在阶段 10 接入 Giscus。
             </section>
           )
         }
 
-        <PostNav prev={prev} next={next} />
-        <PostRelated posts={related} />
+        <!-- 👇 加上忽略标记 -->
+        <div data-pagefind-ignore>
+          <PostNav prev={prev} next={next} />
+          <PostRelated posts={related} />
+        </div>
       </article>
     </div>
   </div>

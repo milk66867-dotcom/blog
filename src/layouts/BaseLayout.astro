@@ -7,6 +7,7 @@ import { buildSeo } from "@/services/seo";
 import SeoHead from "@/components/seo/SeoHead.astro";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import type { SEO } from "@/domain/types";
+import SearchBox from "@/components/search/SearchBox";
 // import ParticleBackground from "@/components/particle/ParticleBackground";
 
 interface Props {
@@ -44,7 +45,7 @@ const finalSeo =
 
 <!doctype html>
 <html lang={siteConfig.language}>
-  <head>
+  <head data-pagefind-ignore>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -101,6 +102,9 @@ const finalSeo =
             </ul>
           </nav>
 
+          <!-- 引入搜索组件 -->
+          <SearchBox client:only="react" />
+
           <button
             id="particle-toggle"
             class="flex h-8 w-8 items-center justify-center rounded-md border border-tb-border text-tb-muted hover:text-tb-fg hover:bg-tb-border/40"
@@ -120,6 +124,7 @@ const finalSeo =
     </main>
 
     <footer
+      data-pagefind-ignore
       class="site-footer border-t border-tb-border py-8 text-center text-sm text-tb-muted mt-12"
     >
       <p>
