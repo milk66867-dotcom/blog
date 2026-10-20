@@ -38,7 +38,7 @@ const rawConfig: SiteConfig = {
     comments: {
         enabled: true,
         provider: 'giscus',
-        repo: 'https://github.com/milk66867-dotcom/blog',
+        repo: 'milk66867-dotcom/blog',
         repoId: 'R_kgDOVKkBMw',
         category: 'Announcements',
         categoryId: 'DIC_kwDOVKkBM84DJJ--',
