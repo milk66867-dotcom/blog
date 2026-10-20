@@ -1,69 +1,100 @@
 ---
 // src/layouts/PostLayout.astro
-import BaseLayout from './BaseLayout.astro';
-import type { Post } from '@/domain/types';
-import { formatDate } from '@/domain/utils';
+import BaseLayout from "./BaseLayout.astro";
+import type { Post } from "@/domain/types";
+import PostMeta from "@/components/post/PostMeta.astro";
+import PostToc from "@/components/post/PostToc.astro";
+import PostNav from "@/components/post/PostNav.astro";
+import PostRelated from "@/components/post/PostRelated.astro";
+import MarkdownRenderer from "@/components/markdown/MarkdownRenderer.astro";
+import CodeBlock from "@/components/markdown/CodeBlock";
+import ImageLightbox from "@/components/markdown/ImageLightbox";
+import MarkdownStyleSwitcher from "@/components/post/MarkdownStyleSwitcher";
+
+// 1. 引入生成 JSON-LD 的服务和站点配置
+import { buildArticleJsonLd } from "@/services/seo";
+import { siteConfig } from "@/config/site.config";
 
 interface Props {
   post: Post;
   prev?: Post | null;
   next?: Post | null;
+  related?: Post[];
 }
 
-const { post, prev, next } = Astro.props;
+const { post, prev = null, next = null, related = [] } = Astro.props;
+
+const style = post.frontmatter.style ?? "github";
+const showToc = post.frontmatter.toc !== false && post.toc.length > 0;
+const showComments = post.frontmatter.comments !== false;
+
+// 2. 生成合并后的 SEO 对象
+const articleJsonLd = buildArticleJsonLd(post, siteConfig);
+const finalSeo = {
+  ...post.seo,
+  jsonLd: articleJsonLd,
+};
 ---
 
-<BaseLayout
-  title={post.frontmatter.title}
-  description={post.excerpt}
-  image={post.seo.ogImage}
-  type="article"
->
-  <article class="post-layout" data-md-style={post.frontmatter.style ?? 'github'}>
-    <header class="post-header">
-      <h1>{post.frontmatter.title}</h1>
-      <div class="post-meta">
-        <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
-        <span>·</span>
-        <span>{post.readingTime} 分钟阅读</span>
-        {post.frontmatter.category && <span>· {post.frontmatter.category}</span>}
-      </div>
-      {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
-        <ul class="post-tags">
-          {post.frontmatter.tags.map((tag) => (
-            <li><a href={`/tags/${encodeURIComponent(tag)}`}>{tag}</a></li>
-          ))}
-        </ul>
-      )}
-    </header>
+<!-- 3. 直接传入完整的 seo 对象，移除零散的 title/description 等属性 -->
+<BaseLayout title={post.frontmatter.title} seo={finalSeo}>
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <div class="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+      {
+        showToc && (
+          <>
+            <aside class="hidden lg:block">
+              <div class="sticky top-8">
+                <PostToc toc={post.toc} />
+              </div>
+            </aside>
 
-    {post.frontmatter.toc !== false && post.toc.length > 0 && (
-      <aside class="post-toc">
-        <p>目录</p>
-        <ul>
-          {post.toc.map((item) => (
-            <li>
-              <a href={`#${item.id}`}>{item.text}</a>
-              {item.children && item.children.length > 0 && (
-                <ul>
-                  {item.children.map((child) => (
-                    <li><a href={`#${child.id}`}>{child.text}</a></li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )}
+            <details class="lg:hidden rounded border border-tb-border p-3">
+              <summary class="cursor-pointer text-sm font-medium">目录</summary>
+              <div class="mt-2">
+                <PostToc toc={post.toc} />
+              </div>
+            </details>
+          </>
+        )
+      }
 
-    <div class="post-content prose">
-      <Fragment set:html={post.html} />
+      <article class="min-w-0" data-md-style={style} id="post-content">
+        <header class="mb-8">
+          <h1 class="text-3xl font-bold leading-tight">
+            {post.frontmatter.title}
+          </h1>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
+            <PostMeta post={post} />
+            <MarkdownStyleSwitcher client:load initialStyle={style} />
+          </div>
+        </header>
+
+        <MarkdownRenderer
+          content={post.html}
+          style={style}
+          toc={post.frontmatter.toc}
+          math={post.frontmatter.math}
+          mermaid={post.frontmatter.mermaid}
+          codeCopy={true}
+          imageLightbox={true}
+          headings={post.headings}
+        />
+
+        {
+          showComments && (
+            <section class="mt-12 rounded border border-dashed border-tb-border p-6 text-center text-sm text-tb-muted">
+              评论区将在阶段 10 接入 Giscus。
+            </section>
+          )
+        }
+
+        <PostNav prev={prev} next={next} />
+        <PostRelated posts={related} />
+      </article>
     </div>
+  </div>
 
-    <nav class="post-nav">
-      {prev && <a href={prev.url}>← {prev.frontmatter.title}</a>}
-      {next && <a href={next.url}>{next.frontmatter.title} →</a>}
-    </nav>
-  </article>
+  <CodeBlock client:visible />
+  <ImageLightbox client:visible />
 </BaseLayout>

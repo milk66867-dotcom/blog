@@ -1,0 +1,29 @@
+---
+// src/components/markdown/MarkdownRenderer.astro
+import type { Heading, MarkdownStyle } from "@/domain/types";
+
+interface Props {
+    content: string;
+    style?: MarkdownStyle;
+    toc?: boolean;
+    math?: boolean;
+    mermaid?: boolean;
+    codeCopy?: boolean;
+    imageLightbox?: boolean;
+    headings?: Heading[];
+}
+
+const {
+    content,
+    style = "github",
+    codeCopy = true,
+    imageLightbox = true,
+} = Astro.props;
+---
+
+<div
+    class={`prose prose-neutral max-w-none md-style-${style}`}
+    data-code-copy={codeCopy ? "true" : "false"}
+    data-image-lightbox={imageLightbox ? "true" : "false"}
+    set:html={content}
+/>

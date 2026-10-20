@@ -1,18 +1,17 @@
 ---
-// src/pages/posts/page/[...page].astro
-import type { GetStaticPaths } from 'astro';
-import ListLayout from '@/layouts/ListLayout.astro';
-import { getAllPosts } from '@/services/content';
-import { siteConfig } from '@/config/site.config';
-import { formatDate } from '@/domain/utils';
-import type { Post } from '@/domain/types';
+import type { GetStaticPaths } from "astro";
+import ListLayout from "@/layouts/ListLayout.astro";
+import PostList from "@/components/post/PostList.astro";
+import Pagination from "@/components/ui/Pagination.astro";
+import { getAllPosts } from "@/services/content";
+import { siteConfig } from "@/config/site.config";
+import type { Post } from "@/domain/types";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const allPosts = await getAllPosts();
   const pageSize = siteConfig.pagination.pageSize;
   const totalPages = Math.ceil(allPosts.length / pageSize);
 
-  // 只生成第 2 页及以后；/posts/page/1 由 astro.config.mjs 的 redirects 处理
   return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => {
     const page = i + 2;
     return {
@@ -36,25 +35,6 @@ const { posts, currentPage, totalPages } = Astro.props;
 ---
 
 <ListLayout title={`文章 - 第 ${currentPage} 页`}>
-  <ul class="post-list">
-    {posts.map((post) => (
-      <li>
-        <a href={post.url}>{post.frontmatter.title}</a>
-        <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
-        <p>{post.excerpt}</p>
-      </li>
-    ))}
-  </ul>
-
-  <nav class="pagination">
-    {currentPage > 2 ? (
-      <a href={`/posts/page/${currentPage - 1}`}>← 上一页</a>
-    ) : (
-      <a href="/posts">← 上一页</a>
-    )}
-    <span>第 {currentPage} 页 / 共 {totalPages} 页</span>
-    {currentPage < totalPages && (
-      <a href={`/posts/page/${currentPage + 1}`}>下一页 →</a>
-    )}
-  </nav>
+  <PostList posts={posts} showCover={true} />
+  <Pagination current={currentPage} total={totalPages} basePath="/posts" />
 </ListLayout>

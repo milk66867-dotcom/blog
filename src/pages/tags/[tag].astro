@@ -1,32 +1,38 @@
 ---
-import { getCollection } from 'astro:content';
+// src/pages/tags/[tag].astro
+import type { GetStaticPaths } from "astro";
+import ListLayout from "@/layouts/ListLayout.astro";
+import PostList from "@/components/post/PostList.astro";
+import { getAllTags, getPostsByTag } from "@/services/content";
+import type { Post } from "@/domain/types";
 
-export async function getStaticPaths() {
-  // 1. 获取所有的博客文章
-  const allPosts = await getCollection('blog'); // 如果你的集合名字不叫 'blog'，请修改这里
-  
-  // 2. 从所有文章中提取出不重复的标签列表
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+export const getStaticPaths: GetStaticPaths = async () => {
+  const tags = await getAllTags();
 
-  // 3. 返回 Astro 要求的格式
-  return uniqueTags.map((tag) => {
-    // 过滤出属于当前标签的文章，传给页面使用
-    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
-    return {
-      params: { tag: tag },
-      props: { posts: filteredPosts },
-    };
-  });
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { tagName: tag.name },
+  }));
+};
+
+interface Props {
+  tagName: string;
 }
 
-// 从 params 拿到当前标签名，从 props 拿到该标签下的文章列表
+const { tagName } = Astro.props;
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const posts = await getPostsByTag(tag!);
 ---
 
-<h1>标签: {tag}</h1>
-<ul>
-  {posts.map((post) => (
-    <li><a href={`/posts/${post.id}`}>{post.data.title}</a></li>
-  ))}
-</ul>
+<ListLayout title={`标签: ${tagName}`}>
+  <div class="mb-8">
+    <p class="mt-2 text-tb-muted">共找到 {posts.length} 篇文章</p>
+    <a
+      href="/tags"
+      class="mt-4 inline-block text-sm text-tb-primary hover:underline"
+      >← 返回所有标签</a
+    >
+  </div>
+
+  <PostList posts={posts} showCover={true} />
+</ListLayout>

@@ -1,0 +1,26 @@
+---
+// src/components/post/PostList.astro
+import type { Post } from "@/domain/types";
+import PostCard from "./PostCard.astro";
+
+interface Props {
+    posts: Post[];
+    showCover?: boolean;
+}
+
+const { posts, showCover = false } = Astro.props;
+---
+
+{
+    posts.length === 0 ? (
+        <p class="py-12 text-center text-sm text-tb-muted">还没有文章。</p>
+    ) : (
+        <ul class="grid gap-4 sm:grid-cols-2">
+            {posts.map((post) => (
+                <li>
+                    <PostCard post={post} showCover={showCover} />
+                </li>
+            ))}
+        </ul>
+    )
+}

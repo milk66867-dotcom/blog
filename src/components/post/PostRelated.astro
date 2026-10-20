@@ -1,0 +1,35 @@
+---
+// src/components/post/PostRelated.astro
+import type { Post } from "@/domain/types";
+
+interface Props {
+    posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+    posts.length > 0 && (
+        <section class="mt-12">
+            <h2 class="mb-4 text-lg font-semibold">相关文章</h2>
+            <ul class="space-y-2">
+                {posts.map((post) => (
+                    <li>
+                        <a
+                            href={post.url}
+                            class="flex items-baseline justify-between gap-4 rounded px-2 py-1 hover:bg-tb-border/40"
+                        >
+                            <span class="text-sm font-medium">
+                                {post.frontmatter.title}
+                            </span>
+                            <span class="shrink-0 text-xs text-tb-muted">
+                                {post.readingTime} 分钟
+                            </span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    )
+}

@@ -1,9 +1,9 @@
 ---
-// src/pages/posts/index.astro
-import ListLayout from '@/layouts/ListLayout.astro';
-import { getAllPosts } from '@/services/content';
-import { siteConfig } from '@/config/site.config';
-import { formatDate } from '@/domain/utils';
+import ListLayout from "@/layouts/ListLayout.astro";
+import PostList from "@/components/post/PostList.astro";
+import Pagination from "@/components/ui/Pagination.astro";
+import { getAllPosts } from "@/services/content";
+import { siteConfig } from "@/config/site.config";
 
 const allPosts = await getAllPosts();
 const pageSize = siteConfig.pagination.pageSize;
@@ -12,20 +12,10 @@ const totalPages = Math.max(1, Math.ceil(allPosts.length / pageSize));
 ---
 
 <ListLayout title="文章">
-  <ul class="post-list">
-    {posts.map((post) => (
-      <li>
-        <a href={post.url}>{post.frontmatter.title}</a>
-        <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
-        <p>{post.excerpt}</p>
-      </li>
-    ))}
-  </ul>
-
-  {totalPages > 1 && (
-    <nav class="pagination">
-      <span>第 1 页 / 共 {totalPages} 页</span>
-      {totalPages >= 2 && <a href="/posts/page/2">下一页 →</a>}
-    </nav>
-  )}
+  <PostList posts={posts} showCover={true} />
+  {
+    totalPages > 1 && (
+      <Pagination current={1} total={totalPages} basePath="/posts" />
+    )
+  }
 </ListLayout>

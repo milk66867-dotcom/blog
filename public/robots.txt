@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# 屏蔽不需要索引的页面（如草稿、本地管理页）
+Disallow: /admin
+Disallow: /search
+
+Sitemap: https://techblog.pages.dev/sitemap.xml

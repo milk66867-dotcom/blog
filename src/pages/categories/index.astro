@@ -1,0 +1,31 @@
+---
+// src/pages/categories/index.astro
+import ListLayout from "@/layouts/ListLayout.astro";
+import { getAllCategories } from "@/services/content";
+
+const categories = await getAllCategories();
+---
+
+<ListLayout title="分类">
+    <div class="max-w-3xl">
+        <p class="mb-8 text-tb-muted">共 {categories.length} 个分类</p>
+
+        <ul class="grid gap-4 sm:grid-cols-2">
+            {
+                categories.map((cat) => (
+                    <li>
+                        <a
+                            href={`/categories/${cat.slug}`}
+                            class="flex items-center justify-between rounded-lg border border-tb-border bg-tb-bg p-4 transition-all hover:border-tb-primary hover:shadow-sm"
+                        >
+                            <span class="text-lg font-medium">{cat.name}</span>
+                            <span class="text-sm text-tb-muted">
+                                {cat.postSlugs.length} 篇文章
+                            </span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</ListLayout>

@@ -1,0 +1,53 @@
+---
+// src/pages/archive.astro
+import ListLayout from '@/layouts/ListLayout.astro';
+import { getArchive } from '@/services/content';
+import { formatDate } from '@/domain/utils';
+
+const archiveGroups = await getArchive();
+const totalPosts = archiveGroups.reduce((sum, group) => sum + group.count, 0);
+---
+
+<ListLayout title="归档">
+  <div class="max-w-3xl">
+    <p class="mb-8 text-tb-muted">共 {totalPosts} 篇文章</p>
+
+    <div class="space-y-12">
+      {archiveGroups.map((group) => (
+        <section>
+          <!-- 年份标题 -->
+          <h2 class="mb-4 text-2xl font-bold text-tb-fg">
+            {group.year}
+            <span class="ml-2 text-sm font-normal text-tb-muted">({group.count} 篇)</span>
+          </h2>
+
+          <div class="space-y-6 border-l-2 border-tb-border pl-6 ml-2">
+            {group.months.map((month) => (
+              <div class="relative">
+                <!-- 时间轴圆点 -->
+                <div class="absolute -left-[31px] top-1.5 h-3 w-3 rounded-full border-2 border-tb-bg bg-tb-primary"></div>
+                
+                <h3 class="mb-3 text-lg font-semibold text-tb-muted">
+                  {month.month} 月
+                </h3>
+                
+                <ul class="space-y-3">
+                  {month.posts.map((post) => (
+                    <li class="group flex items-baseline gap-4">
+                      <time datetime={post.date} class="shrink-0 text-sm text-tb-muted w-24">
+                        {formatDate(post.date).split(' ')[0] /* 只取日期部分 */}
+                      </time>
+                      <a href={post.url} class="text-base font-medium group-hover:text-tb-primary transition-colors">
+                        {post.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</ListLayout>

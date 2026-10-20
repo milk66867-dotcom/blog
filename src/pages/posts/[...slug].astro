@@ -1,12 +1,13 @@
 ---
 // src/pages/posts/[...slug].astro
-import type { GetStaticPaths } from 'astro';
-import PostLayout from '@/layouts/PostLayout.astro';
+import type { GetStaticPaths } from "astro";
+import PostLayout from "@/layouts/PostLayout.astro";
 import {
   getAllPosts,
   getAdjacentPosts,
-} from '@/services/content';
-import type { Post } from '@/domain/types';
+  getRelatedPosts,
+} from "@/services/content";
+import type { Post } from "@/domain/types";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getAllPosts({ includeDrafts: false });
@@ -22,6 +23,7 @@ interface Props {
 
 const { post } = Astro.props;
 const { prev, next } = await getAdjacentPosts(post.slug);
+const related = await getRelatedPosts(post.slug, 3);
 ---
 
-<PostLayout post={post} prev={prev} next={next} />
+<PostLayout post={post} prev={prev} next={next} related={related} />

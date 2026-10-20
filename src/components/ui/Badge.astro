@@ -1,0 +1,21 @@
+---
+// src/components/ui/Badge.astro
+interface Props {
+    color?: "default" | "primary" | "muted";
+    text?: string;
+}
+
+const { color = "default", text } = Astro.props;
+
+const colors = {
+    default: "bg-tb-border/40 text-tb-fg",
+    primary: "bg-tb-primary/10 text-tb-primary",
+    muted: "bg-tb-border/20 text-tb-muted",
+};
+---
+
+<span
+    class={`inline-flex items-center rounded px-2 py-0.5 text-xs ${colors[color]}`}
+>
+    {text ?? <slot />}
+</span>

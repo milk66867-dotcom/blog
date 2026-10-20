@@ -1,6 +1,6 @@
 ---
 // src/layouts/ListLayout.astro
-import BaseLayout from './BaseLayout.astro';
+import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title: string;
@@ -11,8 +11,19 @@ const { title, description } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
-  <section class="list-layout">
-    <h1>{title}</h1>
-    <slot />
-  </section>
+  <!-- max-w-4xl 限制宽度，mx-auto 居中，px-4 py-12 提供内边距 -->
+  <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <!-- 统一的页面头部 -->
+    <header class="mb-10 border-b border-tb-border pb-6">
+      <h1 class="text-3xl font-bold tracking-tight text-tb-fg sm:text-4xl">
+        {title}
+      </h1>
+      {description && <p class="mt-4 text-lg text-tb-muted">{description}</p>}
+    </header>
+
+    <!-- 页面内容插槽 -->
+    <div class="list-layout">
+      <slot />
+    </div>
+  </div>
 </BaseLayout>

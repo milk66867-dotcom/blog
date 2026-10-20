@@ -1,0 +1,9 @@
+.md-style-vue {
+  --tw-prose-links: #42b883;
+  --tw-prose-headings: #2c3e50;
+}
+.md-style-vue h2 {
+  border-bottom: 1px solid var(--tb-border);
+  padding-bottom: 0.5rem;
+  margin-top: 2em;
+}

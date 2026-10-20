@@ -1,0 +1,31 @@
+---
+// src/components/post/TocItems.astro
+import type { TOCItem } from "@/domain/types";
+import TocItems from "./TocItems.astro";
+
+interface Props {
+    items: TOCItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="space-y-1">
+    {
+        items.map((item) => (
+            <li>
+                <a
+                    href={`#${item.id}`}
+                    class="block rounded px-2 py-1 text-sm text-tb-muted hover:bg-tb-border/40 hover:text-tb-fg"
+                >
+                    {item.text}
+                </a>
+                {item.children && item.children.length > 0 && (
+                    <div class="ml-3 border-l border-tb-border pl-2">
+                        <TocItems items={item.children} />
+                    </div>
+                )}
+            </li>
+        ))
+    }
+</ul>

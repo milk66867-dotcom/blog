@@ -1,0 +1,48 @@
+---
+// src/components/post/PostMeta.astro
+import type { Post } from "@/domain/types";
+import { formatDate } from "@/domain/utils";
+
+interface Props {
+    post: Post;
+}
+
+const { post } = Astro.props;
+const { frontmatter, readingTime } = post;
+---
+
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-tb-muted">
+    <time datetime={frontmatter.date}>{formatDate(frontmatter.date)}</time>
+    <span>·</span>
+    <span>{readingTime} 分钟阅读</span>
+    {
+        frontmatter.category && (
+            <>
+                <span>·</span>
+                <a
+                    href={`/categories/${encodeURIComponent(post.category.slug)}`}
+                    class="hover:text-tb-primary"
+                >
+                    {frontmatter.category}
+                </a>
+            </>
+        )
+    }
+</div>
+
+{
+    frontmatter.tags && frontmatter.tags.length > 0 && (
+        <ul class="mt-2 flex flex-wrap gap-2">
+            {frontmatter.tags.map((tag) => (
+                <li>
+                    <a
+                        href={`/tags/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, "-"))}`}
+                        class="text-xs text-tb-primary hover:underline"
+                    >
+                        #{tag}
+                    </a>
+                </li>
+            ))}
+        </ul>
+    )
+}

@@ -1,0 +1,29 @@
+---
+// src/pages/tags/index.astro
+import ListLayout from "@/layouts/ListLayout.astro";
+import { getAllTags } from "@/services/content";
+
+const tags = await getAllTags();
+---
+
+<ListLayout title="标签">
+    <div class="max-w-3xl">
+        <p class="mb-8 text-tb-muted">共 {tags.length} 个标签</p>
+
+        <div class="flex flex-wrap gap-3">
+            {
+                tags.map((tag) => (
+                    <a
+                        href={`/tags/${tag.slug}`}
+                        class="inline-flex items-center rounded-full border border-tb-border bg-tb-bg px-4 py-1.5 text-sm font-medium text-tb-fg transition-colors hover:border-tb-primary hover:text-tb-primary"
+                    >
+                        {tag.name}
+                        <span class="ml-2 rounded-full bg-tb-border/40 px-2 py-0.5 text-xs text-tb-muted">
+                            {tag.postSlugs.length}
+                        </span>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+</ListLayout>

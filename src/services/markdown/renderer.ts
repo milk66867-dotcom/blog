@@ -12,6 +12,7 @@ import { rehypeCodePlugin } from './plugins/rehype-code';
 import { rehypeImagePlugin } from './plugins/rehype-image';
 import { rehypeMermaidPlugin } from './plugins/rehype-mermaid';
 import { visit } from 'unist-util-visit';
+import rehypeSlug from 'rehype-slug';
 
 
 export interface RenderOptions {
@@ -48,6 +49,9 @@ export async function renderMarkdown(
     const processor = unified()
         .use(remarkParse)
         .use(remarkRehype, { allowDangerousHtml: false });
+
+    // 新增这一行，放在转换成 html 之前
+    processor.use(rehypeSlug);
 
     if (options.math) {
         processor.use(remarkMath).use(rehypeKatex);

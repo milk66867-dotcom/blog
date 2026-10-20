@@ -1,6 +1,6 @@
 ---
 // src/layouts/PageLayout.astro
-import BaseLayout from './BaseLayout.astro';
+import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title: string;
@@ -11,8 +11,19 @@ const { title, description } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="page-layout prose">
-    <h1>{title}</h1>
-    <slot />
-  </article>
+  <!-- 限制最大宽度，居中，并加上下内边距 -->
+  <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <!-- 页面头部：沿用跟 ListLayout 一致的设计，并有底边线区分 -->
+    <header class="mb-10 border-b border-tb-border pb-6">
+      <h1 class="text-3xl font-bold tracking-tight text-tb-fg sm:text-4xl">
+        {title}
+      </h1>
+      {description && <p class="mt-4 text-lg text-tb-muted">{description}</p>}
+    </header>
+
+    <!-- 正文区域：交给 prose 渲染排版，max-w-none 去除双重宽度限制 -->
+    <article class="page-layout prose prose-neutral max-w-none">
+      <slot />
+    </article>
+  </div>
 </BaseLayout>

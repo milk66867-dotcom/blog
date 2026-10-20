@@ -1,0 +1,6 @@
+.md-style-minimal {
+  --tw-prose-body: #6b7280;
+  --tw-prose-headings: #111827;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}

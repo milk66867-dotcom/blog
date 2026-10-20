@@ -1,0 +1,44 @@
+---
+// src/components/ui/Pagination.astro
+interface Props {
+    current: number;
+    total: number;
+    basePath: string;
+}
+
+const { current, total, basePath } = Astro.props;
+
+function pageHref(page: number): string {
+    if (page <= 1) return basePath;
+    return `${basePath}/page/${page}`;
+}
+
+const prevHref = pageHref(current - 1);
+const nextHref = pageHref(current + 1);
+const hasPrev = current > 1;
+const hasNext = current < total;
+---
+
+<nav class="flex items-center justify-between gap-4 py-6" aria-label="分页">
+    {
+        hasPrev ? (
+            <a href={prevHref} class="text-sm text-tb-primary hover:underline">
+                ← 上一页
+            </a>
+        ) : (
+            <span class="text-sm text-tb-muted">← 上一页</span>
+        )
+    }
+
+    <span class="text-sm text-tb-muted">第 {current} 页 / 共 {total} 页</span>
+
+    {
+        hasNext ? (
+            <a href={nextHref} class="text-sm text-tb-primary hover:underline">
+                下一页 →
+            </a>
+        ) : (
+            <span class="text-sm text-tb-muted">下一页 →</span>
+        )
+    }
+</nav>

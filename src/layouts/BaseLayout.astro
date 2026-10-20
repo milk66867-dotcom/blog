@@ -1,28 +1,45 @@
 ---
 // src/layouts/BaseLayout.astro
-import { siteConfig } from '@/config/site.config';
+import "@/styles/global.css";
+import { siteConfig } from "@/config/site.config";
+import { getInlineThemeScript } from "@/services/theme";
+import { buildSeo } from "@/services/seo";
+import SeoHead from "@/components/seo/SeoHead.astro";
+import ThemeToggle from "@/components/layout/ThemeToggle";
+import type { SEO } from "@/domain/types";
+// import ParticleBackground from "@/components/particle/ParticleBackground";
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
-  type?: 'website' | 'article';
+  type?: "website" | "article";
   noindex?: boolean;
+  seo?: SEO; // 如果外部（如 PostLayout）传了完整 SEO，优先使用
 }
 
 const {
   title,
   description = siteConfig.description,
   image = siteConfig.seo.defaultOgImage,
-  type = 'website',
+  type = "website",
   noindex = false,
+  seo: customSeo, // 这里解构出 customSeo
 } = Astro.props;
 
-const fullTitle =
-  title === siteConfig.title
-    ? title
-    : siteConfig.seo.titleTemplate.replace('%s', title);
-const canonical = new URL(Astro.url.pathname, siteConfig.url).toString();
+// 如果没有外部传入，则自动生成
+const finalSeo =
+  customSeo ||
+  buildSeo({
+    title,
+    description,
+    image,
+    type,
+    noindex,
+    url: Astro.url.pathname,
+    defaults: siteConfig.seo,
+    siteUrl: siteConfig.url,
+  });
 ---
 
 <!doctype html>
@@ -32,77 +49,111 @@ const canonical = new URL(Astro.url.pathname, siteConfig.url).toString();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${siteConfig.title} RSS`}
+      href="/rss.xml"
+    />
 
-    <!-- SEO 占位：阶段 6 会替换为 SeoHead 组件 -->
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="canonical" href={canonical} />
+    <!-- 1. 注入防闪烁主题脚本（只保留这一处） -->
+    <script is:inline set:html={getInlineThemeScript()} />
 
-    <meta property="og:type" content={type} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, siteConfig.url).toString()} />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- 主题内联脚本：必须在 CSS 加载前执行，防止闪烁 -->
-    <script is:inline>
-      (function () {
-        try {
-          var stored = localStorage.getItem('techblog:theme') || 'system';
-          var resolved =
-            stored === 'system'
-              ? window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light'
-              : stored;
-          document.documentElement.dataset.theme = resolved;
-          document.documentElement.dataset.themePreference = stored;
-        } catch (e) {
-          document.documentElement.dataset.theme = 'light';
-        }
-      })();
-    </script>
+    <!-- 2. 注入 SEO 标签（统一由 SeoHead 接管） -->
+    <SeoHead seo={finalSeo} />
 
     <slot name="head" />
   </head>
-  <body>
-    <header class="site-header">
-      <nav class="site-nav">
-        <a href="/" class="site-logo">{siteConfig.title}</a>
-        <ul>
-          {
-            siteConfig.navigation
-              .filter((item) => item.visible)
-              .sort((a, b) => a.order - b.order)
-              .map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-          }
-        </ul>
-      </nav>
+  <body class="bg-tb-bg text-tb-fg antialiased">
+    <!-- <ParticleBackground client:only="react" /> -->
+    <header
+      class="sticky top-0 z-10 border-b border-tb-border bg-tb-bg/80 backdrop-blur"
+    >
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3"
+      >
+        <a href="/" class="text-lg font-bold hover:text-tb-primary">
+          {siteConfig.title}
+        </a>
+
+        <div class="flex items-center gap-4">
+          <nav>
+            <ul
+              class="flex items-center gap-4 text-sm font-medium text-tb-muted"
+            >
+              {
+                siteConfig.navigation
+                  .filter((item) => item.visible)
+                  .sort((a, b) => a.order - b.order)
+                  .map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        target={item.external ? "_blank" : undefined}
+                        rel={item.external ? "noopener noreferrer" : undefined}
+                        class="transition-colors hover:text-tb-fg"
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))
+              }
+            </ul>
+          </nav>
+
+          <button
+            id="particle-toggle"
+            class="flex h-8 w-8 items-center justify-center rounded-md border border-tb-border text-tb-muted hover:text-tb-fg hover:bg-tb-border/40"
+            title="切换粒子效果"
+          >
+            ✨
+          </button>
+
+          <!-- 3. 挂载主题切换按钮 -->
+          <ThemeToggle client:load />
+        </div>
+      </div>
     </header>
 
     <main class="site-main">
       <slot />
     </main>
 
-    <footer class="site-footer">
+    <footer
+      class="site-footer border-t border-tb-border py-8 text-center text-sm text-tb-muted mt-12"
+    >
       <p>
-        © {new Date().getFullYear()} {siteConfig.author.name}
+        © {new Date().getFullYear()}
+        {siteConfig.author.name}
         {siteConfig.license && ` · ${siteConfig.license}`}
       </p>
     </footer>
 
     <slot name="scripts" />
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("particle-toggle");
+        if (!btn) return;
+
+        // 初始化按钮状态
+        const updateBtnState = () => {
+          const isEnabled =
+            localStorage.getItem("techblog:particle-enabled") !== "false";
+          btn.style.opacity = isEnabled ? "1" : "0.5";
+        };
+        updateBtnState();
+
+        btn.addEventListener("click", () => {
+          const current =
+            localStorage.getItem("techblog:particle-enabled") !== "false";
+          const next = !current;
+          localStorage.setItem("techblog:particle-enabled", String(next));
+          window.dispatchEvent(
+            new CustomEvent("techblog:particle-change", { detail: next }),
+          );
+          updateBtnState();
+        });
+      });
+    </script>
   </body>
 </html>

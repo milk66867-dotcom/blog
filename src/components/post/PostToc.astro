@@ -1,0 +1,22 @@
+---
+// src/components/post/PostToc.astro
+import type { TOCItem } from "@/domain/types";
+import TocItems from "./TocItems.astro";
+
+interface Props {
+    toc: TOCItem[];
+}
+
+const { toc } = Astro.props;
+---
+
+{
+    toc.length > 0 && (
+        <aside class="post-toc" aria-label="文章目录">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-tb-muted">
+                目录
+            </p>
+            <TocItems items={toc} />
+        </aside>
+    )
+}

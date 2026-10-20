@@ -1,1 +1,60 @@
+/* src/styles/global.css */
 @import "tailwindcss";
+@import "./markdown/github.css";
+@import "./markdown/juejin.css";
+@import "./markdown/vue.css";
+@import "./markdown/tech-dark.css";
+@import "./markdown/magazine.css";
+@import "./markdown/minimal.css";
+@plugin "@tailwindcss/typography";
+
+/* 定义自定义颜色变量 */
+@theme {
+  --color-tb-bg: #ffffff;
+  --color-tb-fg: #111827;
+  --color-tb-muted: #6b7280;
+  --color-tb-primary: #0ea5e9;
+  --color-tb-border: #e5e7eb;
+}
+
+/* 亮色主题变量（默认） */
+:root {
+  --tb-bg: #ffffff;
+  --tb-fg: #111827;
+  --tb-muted: #6b7280;
+  --tb-primary: #0ea5e9;
+  --tb-border: #e5e7eb;
+}
+
+/* 暗色主题变量 */
+[data-theme='dark'] {
+  --tb-bg: #0a0a0a;
+  --tb-fg: #e5e7eb;
+  --tb-muted: #9ca3af;
+  --tb-primary: #22d3ee;
+  --tb-border: #1f2937;
+}
+
+
+/* 使用自定义主题（处理暗黑模式） */
+:root {
+  background-color: var(--color-tb-bg);
+  color: var(--color-tb-fg);
+}
+
+[data-theme='dark'] {
+  --color-tb-bg: #0a0a0a;
+  --color-tb-fg: #e5e7eb;
+  --color-tb-muted: #9ca3af;
+  --color-tb-primary: #22d3ee;
+  --color-tb-border: #1f2937;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* 在末尾添加 */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem; /* 留出导航栏的高度 */
+}

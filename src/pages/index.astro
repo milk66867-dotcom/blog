@@ -1,35 +1,38 @@
 ---
 // src/pages/index.astro
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getAllPosts } from '@/services/content';
-import { siteConfig } from '@/config/site.config';
-import { formatDate } from '@/domain/utils';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PostList from "@/components/post/PostList.astro";
+import Button from "@/components/ui/Button.astro";
+import ParticleBackground from "@/components/particle/ParticleBackground";
+import { getAllPosts } from "@/services/content";
+import { siteConfig } from "@/config/site.config";
 
 const posts = await getAllPosts({ limit: 5 });
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
-  <section class="hero">
-    <h1>{siteConfig.title}</h1>
-    <p>{siteConfig.description}</p>
-    <p>作者：{siteConfig.author.name}</p>
-  </section>
+  <!-- 接入粒子背景 -->
+  <ParticleBackground client:load />
 
-  <section class="latest-posts">
-    <h2>最新文章</h2>
-    {posts.length === 0 ? (
-      <p>还没有文章。</p>
-    ) : (
-      <ul>
-        {posts.map((post) => (
-          <li>
-            <a href={post.url}>{post.frontmatter.title}</a>
-            <time datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
-            <p>{post.excerpt}</p>
-          </li>
-        ))}
-      </ul>
-    )}
-    <a href="/posts">查看全部文章 →</a>
-  </section>
+  <!-- 确保内容区在粒子之上（相对定位和 z-index） -->
+  <div class="relative z-10">
+    <section class="mx-auto max-w-6xl px-4 py-20 text-center">
+      <h1 class="text-5xl font-bold tracking-tight">{siteConfig.title}</h1>
+      <p class="mt-6 text-xl text-tb-muted">{siteConfig.description}</p>
+      <p class="mt-2 text-sm text-tb-muted">作者：{siteConfig.author.name}</p>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 pb-20">
+      <div class="mb-6 flex items-center justify-between">
+        <h2 class="text-2xl font-semibold">最新文章</h2>
+        <Button href="/posts" variant="secondary" size="sm">查看全部 →</Button>
+      </div>
+      <!-- 给列表一个半透明毛玻璃背景，防止粒子干扰阅读 -->
+      <div
+        class="rounded-2xl bg-tb-bg/60 p-6 backdrop-blur-md border border-tb-border/50"
+      >
+        <PostList posts={posts} showCover={true} />
+      </div>
+    </section>
+  </div>
 </BaseLayout>

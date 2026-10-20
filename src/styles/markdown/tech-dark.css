@@ -1,0 +1,17 @@
+.md-style-tech-dark {
+  background-color: #0d1117;
+  color: #c9d1d9;
+  padding: 2rem;
+  border-radius: 8px;
+  --tw-prose-body: #c9d1d9;
+  --tw-prose-headings: #58a6ff;
+  --tw-prose-links: #58a6ff;
+  --tw-prose-bold: #ffffff;
+  --tw-prose-code: #79c0ff;
+  --tw-prose-pre-bg: #161b22;
+  border: 1px solid #30363d;
+}
+.md-style-tech-dark h1, .md-style-tech-dark h2 {
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.3em;
+}
