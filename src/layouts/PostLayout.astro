@@ -10,6 +10,7 @@ import MarkdownRenderer from "@/components/markdown/MarkdownRenderer.astro";
 import CodeBlock from "@/components/markdown/CodeBlock";
 import ImageLightbox from "@/components/markdown/ImageLightbox";
 import MarkdownStyleSwitcher from "@/components/post/MarkdownStyleSwitcher";
+import Comment from "@/components/comment/Comment";
 
 import { buildArticleJsonLd } from "@/services/seo";
 import { siteConfig } from "@/config/site.config";
@@ -81,7 +82,7 @@ const finalSeo = {
         />
 
         <!-- 👇 加上忽略标记 -->
-        {
+        <!-- {
           showComments && (
             <section
               data-pagefind-ignore
@@ -89,6 +90,13 @@ const finalSeo = {
             >
               评论区将在阶段 10 接入 Giscus。
             </section>
+          )
+        } -->
+        {
+          showComments && (
+            <div data-pagefind-ignore>
+              <Comment client:visible />
+            </div>
           )
         }
 

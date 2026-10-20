@@ -14,7 +14,7 @@ const rawConfig: SiteConfig = {
     },
     title: 'TechBlog',
     description: '一个科技感个人博客',
-    url: 'https://techblog.pages.dev',
+    url: 'https://blog-9th.pages.dev/',
     base: '/',
     language: 'zh-CN',
     author: {
@@ -38,10 +38,10 @@ const rawConfig: SiteConfig = {
     comments: {
         enabled: true,
         provider: 'giscus',
-        repo: 'yourname/techblog',
-        repoId: 'R_xxx',
+        repo: 'https://github.com/milk66867-dotcom/blog',
+        repoId: 'R_kgDOVKkBMw',
         category: 'Announcements',
-        categoryId: 'DIC_xxx',
+        categoryId: 'DIC_kwDOVKkBM84DJJ--',
         mapping: 'pathname',
         reactionsEnabled: true,
         inputPosition: 'bottom',
