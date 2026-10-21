@@ -10,6 +10,7 @@ import MarkdownRenderer from "@/components/markdown/MarkdownRenderer.astro";
 import CodeBlock from "@/components/markdown/CodeBlock";
 import ImageLightbox from "@/components/markdown/ImageLightbox";
 import MarkdownStyleSwitcher from "@/components/post/MarkdownStyleSwitcher";
+import PostSideNav from "@/components/post/PostSideNav.astro";
 import Comment from "@/components/comment/Comment";
 
 import { buildArticleJsonLd } from "@/services/seo";
@@ -42,21 +43,31 @@ const finalSeo = {
 ---
 
 <BaseLayout title={post.frontmatter.title} seo={finalSeo}>
+  <!-- 下一篇按钮 -->
+  <!-- <PostSideNav prev={prev} next={next} /> -->
+   
   <div class="mx-auto max-w-6xl px-4 py-8">
     <!-- 3. 使用动态的 gridClass -->
     <div class={`grid gap-8 ${gridClass}`}>
       {
         showToc && (
           <>
-            <aside class="hidden lg:block">
+            {/* <aside class="hidden lg:block">
               <div class="sticky top-8">
+                <PostToc toc={post.toc} />
+              </div>
+            </aside> */}
+            <aside class="hidden lg:block">
+              <!-- 👇 核心修改：使用 scrollbar-hide 并限制高度 -->
+              <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 scrollbar-hide">
                 <PostToc toc={post.toc} />
               </div>
             </aside>
 
             <details class="lg:hidden rounded border border-tb-border p-3">
               <summary class="cursor-pointer text-sm font-medium">目录</summary>
-              <div class="mt-2">
+              <!-- 👇 移动端同样应用 scrollbar-hide -->
+              <div class="mt-2 max-h-60 overflow-y-auto scrollbar-hide">
                 <PostToc toc={post.toc} />
               </div>
             </details>

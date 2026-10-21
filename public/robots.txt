@@ -5,4 +5,4 @@ Allow: /
 Disallow: /admin
 Disallow: /search
 
-Sitemap: https://techblog.pages.dev/sitemap.xml
+Sitemap: https://blog-9th.pages.dev/sitemap.xml

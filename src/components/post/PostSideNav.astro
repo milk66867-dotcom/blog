@@ -1,0 +1,58 @@
+---
+// src/components/post/PostSideNav.astro
+import type { Post } from "@/domain/types";
+
+interface Props {
+  prev?: Post | null;
+  next?: Post | null;
+}
+
+const { prev = null, next = null } = Astro.props;
+---
+
+<!-- 稍微拉开与屏幕边缘的距离 (right-6) 防止圆形按钮或提示框被裁切 -->
+<div class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col gap-6">
+  
+  <!-- 上一篇 -->
+  {prev && (
+    <a
+      href={prev.url}
+      class="group relative flex h-11 w-11 items-center justify-center rounded-full border border-tb-border/50 bg-tb-bg/20 backdrop-blur-md text-tb-muted opacity-30 transition-all duration-300 hover:opacity-100 hover:border-tb-primary hover:bg-tb-bg hover:text-tb-primary hover:shadow-[0_0_15px_rgba(14,165,233,0.3)] hover:-translate-x-1"
+    >
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+
+      <!-- 左侧悬浮标题提示 -->
+      <div class="pointer-events-none absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+        <!-- 提示气泡本体 -->
+        <div class="whitespace-nowrap rounded-lg border border-tb-border/50 bg-tb-bg/90 px-3 py-1.5 text-xs font-medium text-tb-fg shadow-lg backdrop-blur-sm">
+          {prev.frontmatter.title}
+        </div>
+        <!-- 气泡右侧的小三角 -->
+        <div class="absolute right-[-5px] top-1/2 -mt-[5px] h-2.5 w-2.5 rotate-45 border-r border-t border-tb-border/50 bg-tb-bg/90"></div>
+      </div>
+    </a>
+  )}
+
+  <!-- 下一篇 -->
+  {next && (
+    <a
+      href={next.url}
+      class="group relative flex h-11 w-11 items-center justify-center rounded-full border border-tb-border/50 bg-tb-bg/20 backdrop-blur-md text-tb-muted opacity-30 transition-all duration-300 hover:opacity-100 hover:border-tb-primary hover:bg-tb-bg hover:text-tb-primary hover:shadow-[0_0_15px_rgba(14,165,233,0.3)] hover:translate-x-1"
+    >
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+
+      <!-- 左侧悬浮标题提示 -->
+      <div class="pointer-events-none absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+        <div class="whitespace-nowrap rounded-lg border border-tb-border/50 bg-tb-bg/90 px-3 py-1.5 text-xs font-medium text-tb-fg shadow-lg backdrop-blur-sm">
+          {next.frontmatter.title}
+        </div>
+        <div class="absolute right-[-5px] top-1/2 -mt-[5px] h-2.5 w-2.5 rotate-45 border-r border-t border-tb-border/50 bg-tb-bg/90"></div>
+      </div>
+    </a>
+  )}
+
+</div>

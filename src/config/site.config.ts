@@ -18,7 +18,7 @@ const rawConfig: SiteConfig = {
     base: '/',
     language: 'zh-CN',
     author: {
-        name: 'Your Name',
+        name: 'Jerry',
         avatar: '/images/avatar/avatar.webp',
         bio: '热爱科技与写作。',
         email: 'me@example.com',
@@ -33,7 +33,7 @@ const rawConfig: SiteConfig = {
         titleTemplate: '%s | TechBlog',
         defaultDescription: '科技感个人博客',
         defaultOgImage: '/images/og/og-default.webp',
-        keywords: ['博客', '前端', '科技'],
+        keywords: ['博客', '科技'],
     },
     comments: {
         enabled: true,

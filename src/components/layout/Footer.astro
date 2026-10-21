@@ -1,0 +1,41 @@
+---
+// src/components/layout/Footer.astro
+import { siteConfig } from '@/config/site.config';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="relative mt-20 border-t border-tb-border/50 bg-tb-bg/30 py-10 backdrop-blur-sm">
+  <!-- 底部的环境光晕 -->
+  <div class="absolute bottom-0 left-1/2 -z-10 h-32 w-3/4 -translate-x-1/2 bg-tb-primary/5 blur-[100px]"></div>
+
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:flex-row sm:px-6">
+    
+    <!-- 左侧：版权信息 -->
+    <div class="flex flex-col items-center gap-2 text-sm text-tb-muted sm:items-start">
+      <p>© {currentYear} <span class="font-semibold text-tb-fg">{siteConfig.author.name}</span>. All rights reserved.</p>
+      {siteConfig.license && (
+        <p class="flex items-center gap-1 text-xs opacity-70">
+          <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          {siteConfig.license}
+        </p>
+      )}
+    </div>
+
+    <!-- 右侧：社交链接 -->
+    <div class="flex items-center gap-4">
+      {siteConfig.socialLinks.map((link) => (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={link.label}
+          class="group relative flex h-10 w-10 items-center justify-center rounded-full border border-tb-border/80 bg-tb-bg/50 text-tb-muted transition-all hover:-translate-y-1 hover:border-tb-primary hover:text-tb-primary hover:shadow-[0_0_15px_rgba(14,165,233,0.3)]"
+        >
+          <!-- 为了简单，这里使用文本首字母代替图标，你也可以换成 SVG -->
+          <span class="text-sm font-bold">{link.platform.substring(0, 1).toUpperCase()}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

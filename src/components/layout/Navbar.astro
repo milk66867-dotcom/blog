@@ -1,0 +1,65 @@
+---
+// src/components/layout/Navbar.astro
+import { siteConfig } from '@/config/site.config';
+import SearchBox from '@/components/search/SearchBox';
+import ThemeToggle from '@/components/layout/ThemeToggle';
+
+// 导航菜单（过滤并排序）
+const navItems = siteConfig.navigation
+  .filter((item) => item.visible)
+  .sort((a, b) => a.order - b.order);
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-tb-border/50 bg-tb-bg/70 backdrop-blur-lg">
+  <!-- 顶部渐变发光装饰线 -->
+  <div class="absolute top-0 left-0 h-[1px] w-full bg-gradient-to-r from-transparent via-tb-primary to-transparent opacity-50"></div>
+  
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    
+    <!-- Logo区：带有渐变色和呼吸灯效果 -->
+    <a href="/" class="group flex items-center gap-2">
+      <span class="h-3 w-3 animate-pulse rounded-full bg-tb-primary shadow-[0_0_10px_var(--color-tb-primary)]"></span>
+      <span class="text-xl font-black tracking-tight text-tb-fg transition-colors group-hover:text-tb-primary">
+        {siteConfig.title}
+      </span>
+    </a>
+
+    <!-- 右侧操作区 -->
+    <div class="flex items-center gap-4 sm:gap-6">
+      <!-- 桌面端导航菜单 -->
+      <nav class="hidden md:block">
+        <ul class="flex items-center gap-6 text-sm font-medium text-tb-muted">
+          {navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+                class="relative transition-colors hover:text-tb-fg group"
+              >
+                {item.label}
+                <!-- 悬停时的底部发光下划线 -->
+                <span class="absolute -bottom-1.5 left-0 h-[2px] w-0 bg-tb-primary transition-all duration-300 group-hover:w-full"></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- 工具按钮区 -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <SearchBox client:only="react" />
+        
+        <!-- 移动端导航按钮（仅演示，点击跳转到归档页作为简易菜单） -->
+        <a href="/posts" class="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-tb-border text-tb-muted hover:text-tb-fg" title="全部文章">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </a>
+
+        <button id="particle-toggle" class="flex h-9 w-9 items-center justify-center rounded-md border border-tb-border text-tb-muted transition-colors hover:bg-tb-border/40 hover:text-tb-fg" title="切换粒子效果">
+          ✨
+        </button>
+        <ThemeToggle client:load />
+      </div>
+    </div>
+  </div>
+</header>

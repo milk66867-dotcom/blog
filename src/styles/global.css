@@ -58,3 +58,17 @@ body {
 h1, h2, h3, h4, h5, h6 {
   scroll-margin-top: 5rem; /* 留出导航栏的高度 */
 }
+
+
+/* 隐藏滚动条但保留滚动功能 */
+.scrollbar-hide {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+/* Chrome, Safari, Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

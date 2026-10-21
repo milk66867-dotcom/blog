@@ -1,0 +1,170 @@
+---
+// src/pages/about.astro
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig } from "@/config/site.config";
+
+// 这里定义你的技术栈（你可以随时增减）
+const skills = [
+    "TypeScript",
+    "React",
+    "Vue",
+    "Node.js",
+    "Astro",
+    "Tailwind CSS",
+    "Python",
+    "Go",
+    "Docker",
+    "PostgreSQL",
+];
+---
+
+<BaseLayout
+    title="关于我"
+    description={`了解 ${siteConfig.author.name} 的故事与技能栈`}
+>
+    <div class="relative mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <!-- 背景光晕装饰 -->
+        <div
+            class="absolute top-20 left-1/2 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-tb-primary/10 blur-[100px]"
+        >
+        </div>
+
+        <!-- 顶部个人名片区 -->
+        <div
+            class="flex flex-col items-center gap-8 md:flex-row md:items-start md:gap-12"
+        >
+            <!-- 头像 -->
+            <div class="relative shrink-0">
+                <div
+                    class="absolute inset-0 -z-10 animate-pulse rounded-full bg-gradient-to-tr from-tb-primary to-purple-500 opacity-20 blur-xl"
+                >
+                </div>
+                <img
+                    src={siteConfig.author.avatar || "/images/avatar.webp"}
+                    alt={siteConfig.author.name}
+                    class="h-40 w-40 rounded-full border-4 border-tb-bg object-cover shadow-2xl ring-2 ring-tb-primary/30 transition-transform duration-500 hover:scale-105"
+                />
+            </div>
+
+            <!-- 文字介绍 -->
+            <div
+                class="flex flex-col items-center text-center md:items-start md:text-left"
+            >
+                <h1
+                    class="text-4xl font-extrabold tracking-tight text-tb-fg sm:text-5xl"
+                >
+                    Hi, 我是 <span
+                        class="bg-gradient-to-r from-tb-primary to-purple-500 bg-clip-text text-transparent"
+                        >{siteConfig.author.name}</span
+                    >
+                </h1>
+                <p class="mt-4 text-xl font-medium text-tb-muted">
+                    {
+                        siteConfig.author.bio ||
+                            "一个热爱技术、热衷于探索未知领域的极客。"
+                    }
+                </p>
+
+                <!-- 社交链接按钮 -->
+                <div
+                    class="mt-6 flex flex-wrap justify-center gap-3 md:justify-start"
+                >
+                    {
+                        siteConfig.socialLinks.map((link) => (
+                            <a
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="flex items-center gap-2 rounded-full border border-tb-border bg-tb-bg/50 px-4 py-2 text-sm font-medium text-tb-fg backdrop-blur-md transition-all hover:border-tb-primary hover:bg-tb-primary hover:text-white hover:shadow-[0_0_15px_rgba(14,165,233,0.4)]"
+                            >
+                                {link.label}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- 详细内容卡片区 -->
+        <div class="mt-16 grid gap-6 md:grid-cols-2">
+            <!-- 卡片 1：我的故事 -->
+            <div
+                class="group relative overflow-hidden rounded-2xl border border-tb-border/50 bg-tb-bg/40 p-8 backdrop-blur-md transition-all hover:border-tb-primary/50 hover:shadow-xl"
+            >
+                <div
+                    class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-tb-primary/5 blur-2xl transition-opacity group-hover:opacity-100"
+                >
+                </div>
+                <h2
+                    class="mb-4 flex items-center gap-2 text-2xl font-bold text-tb-fg"
+                >
+                    <svg
+                        class="h-6 w-6 text-tb-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                        ></path></svg
+                    >
+                    我的故事
+                </h2>
+                <div
+                    class="prose prose-neutral max-w-none text-tb-muted dark:prose-invert"
+                >
+                    <p>
+                        欢迎来到我的数字花园。这里是我用来记录代码、分享思考与生活感悟的自留地。
+                    </p>
+                    <p>
+                        我坚信技术可以改变世界，也喜欢用代码去创造一些有趣且有价值的东西。除了敲代码，我还喜欢阅读、摄影和探索新事物。
+                    </p>
+                    <p class="text-sm italic mt-4 opacity-70">
+                        "Stay hungry, stay foolish." —— Steve Jobs
+                    </p>
+                </div>
+            </div>
+
+            <!-- 卡片 2：技能栈 -->
+            <div
+                class="group relative overflow-hidden rounded-2xl border border-tb-border/50 bg-tb-bg/40 p-8 backdrop-blur-md transition-all hover:border-tb-primary/50 hover:shadow-xl"
+            >
+                <div
+                    class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-purple-500/5 blur-2xl transition-opacity group-hover:opacity-100"
+                >
+                </div>
+                <h2
+                    class="mb-6 flex items-center gap-2 text-2xl font-bold text-tb-fg"
+                >
+                    <svg
+                        class="h-6 w-6 text-tb-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                        ></path></svg
+                    >
+                    技能图谱
+                </h2>
+                <div class="flex flex-wrap gap-3">
+                    {
+                        skills.map((skill) => (
+                            <span class="cursor-default rounded-lg border border-tb-border bg-tb-bg px-3 py-1.5 text-sm font-medium text-tb-fg transition-colors hover:border-tb-primary hover:text-tb-primary">
+                                {skill}
+                            </span>
+                        ))
+                    }
+                </div>
+                <p class="mt-6 text-sm text-tb-muted">
+                    技术栈一直在持续扩展中...
+                </p>
+            </div>
+        </div>
+    </div>
+</BaseLayout>

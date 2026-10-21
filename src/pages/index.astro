@@ -12,7 +12,7 @@ const posts = await getAllPosts({ limit: 5 });
 
 <BaseLayout title={siteConfig.title} description={siteConfig.description}>
   <!-- 接入粒子背景 -->
-  <ParticleBackground client:load />
+  <ParticleBackground client:only="react" />
 
   <!-- 确保内容区在粒子之上（相对定位和 z-index） -->
   <div class="relative z-10">
