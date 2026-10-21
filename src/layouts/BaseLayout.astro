@@ -67,6 +67,13 @@ const finalSeo =
   </head>
   <body class="bg-tb-bg text-tb-fg antialiased">
     <!-- <ParticleBackground client:only="react" /> -->
+    <!-- 👇 键盘用户按 Tab 时的第一个焦点，直达正文 -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-tb-primary focus:text-white"
+    >
+      跳至主内容
+    </a>
     <header
       class="sticky top-0 z-10 border-b border-tb-border bg-tb-bg/80 backdrop-blur"
     >

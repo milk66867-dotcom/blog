@@ -1,0 +1,31 @@
+# public/_headers
+
+# 1. 全局安全响应头
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://giscus.app https://static.cloudflareinsights.com; frame-src https://giscus.app; style-src 'self' 'unsafe-inline'; connect-src 'self' https://giscus.app https://cloudflareinsights.com;
+
+# 2. 静态资源强缓存（带 hash 的 CSS/JS 一年不变）
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 3. 图片强缓存
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 4. HTML 不做强缓存，每次都验证（防止用户看不到新文章）
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# 5. Pagefind 搜索索引缓存 1 天
+/pagefind/*
+  Cache-Control: public, max-age=86400
+
+# 6. RSS 和 Sitemap 缓存 1 小时
+/rss.xml
+  Cache-Control: public, max-age=3600
+/sitemap.xml
+  Cache-Control: public, max-age=3600

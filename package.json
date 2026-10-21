@@ -12,7 +12,10 @@
     "astro": "astro",
     "check": "tsc --noEmit --runExternalCode",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "new-post": "tsx scripts/new-post.ts",
+    "validate": "tsx scripts/validate-content.ts",
+    "migrate": "tsx scripts/migrate.ts"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.3",
@@ -26,6 +29,8 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "astro": "^7.3.8",
+    "gray-matter": "^4.0.3",
+    "idb": "^8.0.4",
     "katex": "^0.19.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -47,6 +52,7 @@
     "@types/katex": "^0.16.8",
     "@types/node": "^26.6.5",
     "pagefind": "^1.5.2",
+    "picocolors": "^1.1.1",
     "tsx": "^4.23.15",
     "typescript": "^7.1.0-dev.20261017.1",
     "vitest": "^5.0.5"

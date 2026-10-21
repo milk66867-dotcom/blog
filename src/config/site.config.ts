@@ -12,7 +12,7 @@ const rawConfig: SiteConfig = {
         contentVersion: '1.0.0',
         updatedAt: '2026-10-15T10:00:00+08:00',
     },
-    title: 'TechBlog',
+    title: 'JerryBlog',
     description: '一个科技感个人博客',
     url: 'https://blog-9th.pages.dev/',
     base: '/',
@@ -20,7 +20,7 @@ const rawConfig: SiteConfig = {
     author: {
         name: 'Your Name',
         avatar: '/images/avatar/avatar.webp',
-        bio: '前端开发者，热爱科技与写作。',
+        bio: '热爱科技与写作。',
         email: 'me@example.com',
         url: '/about',
     },

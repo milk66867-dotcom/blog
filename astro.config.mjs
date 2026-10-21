@@ -21,5 +21,9 @@ export default defineConfig({
     }
   },
 
-  integrations: [react(), mdx()]
+  integrations: [react(), mdx()],
+
+  build: {
+    inlineStylesheets: 'auto',
+  },
 });

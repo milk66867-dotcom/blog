@@ -1,0 +1,12 @@
+---
+// src/pages/admin.astro
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import AdminApp from "@/components/admin/AdminApp";
+---
+
+<BaseLayout title="本地管理" noindex={true}>
+    <div class="mx-auto max-w-7xl px-4 py-8 h-[calc(100vh-140px)]">
+        <!-- 使用 client:only 确保只在浏览器端渲染，避免 SSR 报错 -->
+        <AdminApp client:only="react" />
+    </div>
+</BaseLayout>
